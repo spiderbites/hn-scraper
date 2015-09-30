@@ -1,20 +1,5 @@
-# Loading Hacker News Into Objects
-
-# We now need code which does the following:
-
-# 1. Instantiates a Post object
-# 2. Parses the Hacker News HTML
-# 3. Creates a new Comment object for each comment in the HTML, adding it to the Post 
-# object in (1)
-
-# $ ruby hn_scraper.rb https://news.ycombinator.com/item?id=5003980
-# Post title: XXXXXX
-# Number of comments: XXXXX
-# ... some other statistics we might be interested in -- your choice ...
-
 require 'open-uri'
 require 'nokogiri'
-require 'date'
 require_relative 'post'
 require_relative 'comment'
 

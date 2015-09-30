@@ -1,19 +1,3 @@
-# Creating Your Object Model
-
-# We want two classes: Post and Comment. A post has many comments and each comment belongs 
-# to exactly one post. Let's build the Post class so it has the following attributes: 
-# title, url, points, and item_id, corresponding to the title on Hacker News, the post's 
-# URL, the number of points the post currently has, and the post's Hacker News item ID, 
-# respectively.
-
-# Additionally, create two instance methods:
-
-# Post#comments returns all the comments associated with a particular post
-# Post#add_comment takes a Comment object as its input and adds it to the comment list.
-# You'll have to design the Comment object yourself. What attributes and methods should it support and why?
-
-# We could go deeper and add, e.g., a User model, but we'll stop with Post and Comment.
-
 require 'set'
 
 class Post
