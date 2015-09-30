@@ -16,6 +16,7 @@ require 'open-uri'
 require 'nokogiri'
 require 'date'
 require_relative 'post'
+require_relative 'comment'
 
 class HackerNewsScraper
 
@@ -23,7 +24,25 @@ class HackerNewsScraper
     @doc = doc
   end
 
-  def post
+  def parse
+    @post = scrape_post
+    scrape_comments.each { |comment| @post.add_comment(comment) }
+  end
+
+  def stat_print
+    puts "Post title: #{@post.title}\n" +
+        "Post url: #{@post.url}\n" +
+        "Post points: #{@post.points}\n" +
+        "Number of comments: #{@post.comments.length}\n" +
+        "Number of unique commenters: #{@post.unique_commenters.length}\n" +
+        "Average comment wordcount: #{@post.average_comment_wordcount}"
+  end
+
+  private
+
+  # POSTS
+
+  def scrape_post
     Post.new(post_title, post_url, post_points, post_item_id)
   end
 
@@ -42,6 +61,8 @@ class HackerNewsScraper
   def post_item_id
     @doc.search('.score')[0]["id"].gsub(/\D/,"").to_i
   end
+
+  # COMMENTS
 
   def comments_username
     @doc.search('.comhead > a:first-child').map do |element|
@@ -66,8 +87,16 @@ class HackerNewsScraper
       span.inner_text.gsub(/\n.*$/,"")
     end
   end
+
+  def scrape_comments
+    comments_username.zip(comments_id, comments_date, comments_text).map do |comment_arr|
+      Comment.new(*comment_arr)
+    end
+  end
 end
 
 
 html_file = open(ARGV[0])
 hns = HackerNewsScraper.new(Nokogiri::HTML(File.open(html_file)))
+hns.parse
+hns.stat_print

@@ -14,7 +14,11 @@
 
 # We could go deeper and add, e.g., a User model, but we'll stop with Post and Comment.
 
+require 'set'
+
 class Post
+
+  attr_reader :title, :url, :points, :item_id
 
   def initialize(title, url, points, item_id)
     @title = title
@@ -37,4 +41,14 @@ class Post
   def add_comment(comment)
     @comments << comment
   end
+
+  def unique_commenters
+    Set.new(@comments.map {|comment| comment.user})
+  end
+
+  def average_comment_wordcount
+
+    (@comments.map {|c| c.comment_wordcount}.reduce(:+)) / @comments.length.to_f
+  end
+
 end
