@@ -31,8 +31,8 @@ class Post
   end
 
   def average_comment_wordcount
-
-    (@comments.map {|c| c.comment_wordcount}.reduce(:+)) / @comments.length.to_f
+    word_counts = @comments.map {|c| c.comment_wordcount}.reduce(:+) 
+    (word_counts / @comments.length.to_f).round(2)
   end
 
 end
