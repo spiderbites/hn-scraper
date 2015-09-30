@@ -3,10 +3,17 @@ require 'nokogiri'
 require_relative 'post'
 require_relative 'comment'
 
-class HackerNewsScraper
 
-  def initialize(doc)
-    @doc = doc
+class MissingArgumentError < StandardError; end
+
+class HackerNewsScraper
+  def initialize(url)
+    if url.nil?
+      raise MissingArgumentError
+    end
+    html_file = open(url)
+    file = File.open(html_file)
+    @doc = Nokogiri::HTML(file)
   end
 
   def parse
@@ -81,7 +88,18 @@ class HackerNewsScraper
 end
 
 
-html_file = open(ARGV[0])
-hns = HackerNewsScraper.new(Nokogiri::HTML(File.open(html_file)))
-hns.parse
-hns.stat_print
+# PROGRAM RUNS FROM HERE
+
+begin
+  hns = HackerNewsScraper.new(ARGV[0])
+  hns.parse
+  hns.stat_print
+rescue MissingArgumentError # user supplied no file/URL
+  puts "Usage: ruby hn_scraper.rb URL"
+rescue Errno::ENOENT => e  # user suppplied file that does not exist
+  puts "Error: " + e.message
+rescue TypeError => e # some error related to asking for a bad URL
+  puts "Error: " + e.message
+rescue SocketError => e # some error related to asking for a bad URL
+  puts "Error: " + e.message
+end
